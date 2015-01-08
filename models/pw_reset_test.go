@@ -5,7 +5,7 @@ import (
   "time"
 )
 
-func NewPasswordReset() *PasswordReset{
+func NewTestPasswordReset() *PasswordReset{
   return &PasswordReset{
     UserId: "XXXXXXXXXXXX",
   }
@@ -32,18 +32,16 @@ func Test_PasswordReset_BeforeUpdate(t *testing.T) {
 }
 
 func Test_PasswordReset_Create_Success(t *testing.T) {
-  setup(t)
 
-  x := NewPasswordReset()
+  x := NewTestPasswordReset()
   err := x.Save()
   expect(t, err, nil)
   refute(t, x.Id, "")
 }
 
 func Test_PasswordReset_Create_Fail(t *testing.T) {
-  setup(t)
 
-  x := NewPasswordReset()
+  x := NewTestPasswordReset()
   x.UserId  = ""
   err := x.Save()
   refute(t, err, nil)
@@ -51,9 +49,8 @@ func Test_PasswordReset_Create_Fail(t *testing.T) {
 }
 
 func Test_PasswordReset_Update_Success(t *testing.T) {
-  setup(t)
 
-  x := NewPasswordReset()
+  x := NewTestPasswordReset()
   err := x.Save()
   expect(t, err, nil)
   refute(t, x.Id, "")
@@ -63,9 +60,8 @@ func Test_PasswordReset_Update_Success(t *testing.T) {
 }
 
 func Test_PasswordReset_Update_Fail(t *testing.T) {
-  setup(t)
 
-  x := NewPasswordReset()
+  x := NewTestPasswordReset()
   err := x.Save()
   expect(t, err, nil)
   refute(t, x.Id, "")

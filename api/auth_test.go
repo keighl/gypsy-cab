@@ -1,7 +1,7 @@
 package api
 
 import (
-  m "shrimp/models"
+  m "gypsy/models"
   "github.com/go-martini/martini"
   "github.com/martini-contrib/render"
   "net/http"
@@ -19,7 +19,7 @@ func AuthorizeOK(c martini.Context) {
 }
 
 func AuthorizeFAIL(r render.Render) {
-  r.JSON(401, ApiErrorEnvelope("Your token is invalid!", []string{}))
+  r.JSON(401, ErrorEnvelope("Your token is invalid!", []string{}))
 }
 
 // LOGIN ///////////////////////////

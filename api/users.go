@@ -1,7 +1,7 @@
 package api
 
 import (
-  m "shrimp/models"
+  m "gypsy/models"
   "github.com/martini-contrib/render"
   r "github.com/dancannon/gorethink"
 )
@@ -26,39 +26,40 @@ func UserCreate(r render.Render, attrs m.UserAttrs) {
 
   if (err != nil) {
     if (user.HasErrors()) {
-      r.JSON(400, ApiErrorEnvelope(err.Error(), user.Errors))
+      r.JSON(400, ErrorEnvelope(err.Error(), user.Errors))
     } else {
-      r.JSON(500, Api500Envelope())
+      r.JSON(500, ServerErrorEnvelope())
     }
     return
   }
 
-  data := &ApiData{User: user, CurrentUser: user, ApiToken: user.ApiToken}
+  data := &Data{User: user, UserToken: user.Token}
   r.JSON(201, data)
 }
 
 //////////////////////////////////////
 
 func Me(r render.Render, user *m.User) {
-  data := &ApiData{User: user, CurrentUser: user}
+  data := &Data{User: user}
   r.JSON(200, data)
 }
 
 //////////////////////////////////////
 
 func MeUpdate(r render.Render, user *m.User, attrs m.UserAttrs) {
+  user.UpdateFromAttrs(attrs)
   err := saveUser(user)
 
   if (err != nil) {
     if (user.HasErrors()) {
-      r.JSON(400, ApiErrorEnvelope(err.Error(), user.Errors))
+      r.JSON(400, ErrorEnvelope(err.Error(), user.Errors))
     } else {
-      r.JSON(500, Api500Envelope())
+      r.JSON(500, ServerErrorEnvelope())
     }
     return
   }
 
-  data := &ApiData{User: user, CurrentUser: user}
+  data := &Data{User: user}
   r.JSON(200, data)
 }
 

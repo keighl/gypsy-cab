@@ -3,18 +3,26 @@ package models
 import (
   "testing"
   "reflect"
-  u "shrimp/utils"
+  "image"
+  u "gypsy/utils"
+  r "github.com/dancannon/gorethink"
 )
 
 var (
-  alreadySetup bool
+  imgSquare *image.RGBA = image.NewRGBA(image.Rect(0, 0, 640, 640))
+  imgLand *image.RGBA = image.NewRGBA(image.Rect(0, 0, 640, 480))
+  imgPortrait *image.RGBA = image.NewRGBA(image.Rect(0, 0, 480, 500))
 )
 
-func setup(t *testing.T) {
-  if (alreadySetup) { return }
+func init() {
   Config = u.ConfigForFile("../config/test.json")
   DB = u.RethinkSession(Config)
-  alreadySetup = true
+
+  _, _ = r.Table("users").Delete().RunWrite(DB)
+  _, _ = r.Table("password_resets").Delete().RunWrite(DB)
+  _, _ = r.Table("tokens").Delete().RunWrite(DB)
+  _, _ = r.Table("jobs").Delete().RunWrite(DB)
+  _, _ = r.Table("items").Delete().RunWrite(DB)
 }
 
 func expect(t *testing.T, a interface{}, b interface{}) {

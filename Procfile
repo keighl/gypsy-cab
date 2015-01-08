@@ -1,2 +1,1 @@
 gin: gin
-rethinkdb: rethinkdb

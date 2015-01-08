@@ -1,7 +1,7 @@
 package api
 
 import (
-  m "shrimp/models"
+  m "gypsy/models"
   "net/http"
   "testing"
   "bytes"

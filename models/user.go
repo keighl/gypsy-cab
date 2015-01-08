@@ -24,15 +24,13 @@ type User struct {
   NameLast string `gorethink:"name_last" json:"name_last,omitempty"`
   Password string `gorethink:"-" json:"-" gorethink:"-"`
   PasswordConfirmation string `gorethink:"-" json:"-"`
-  IosPushToken string `gorethink:"ios_push_token" json:"-"`
-  ApiToken string `gorethink:"api_token" json:"-"`
+  Token string `gorethink:"api_token" json:"-"`
 }
 
 type UserAttrs struct {
   NameFirst string `json:"name_first" form:"name_first"`
   NameLast string `json:"name_last" form:"name_last"`
   Email string `json:"email" form:"email"`
-  IosPushToken string `json:"ios_push_token" form:"ios_push_token"`
   Password string `json:"password" form:"password"`
   PasswordConfirmation string `json:"password_confirmation" form:"password_confirmation"`
 }
@@ -64,7 +62,7 @@ func (x *User) Save() error {
 func (x *User) BeforeCreate() {
   x.CreatedAt = time.Now()
   x.UpdatedAt = time.Now()
-  x.ApiToken = uniuri.NewLen(30)
+  x.Token = uniuri.NewLen(30)
 }
 
 func (x *User) BeforeUpdate() {
@@ -188,7 +186,6 @@ func (x *User) Trimspace() {
   x.Email                = strings.TrimSpace(x.Email)
   x.PasswordConfirmation = strings.TrimSpace(x.PasswordConfirmation)
   x.Password             = strings.TrimSpace(x.Password)
-  x.IosPushToken         = strings.TrimSpace(x.IosPushToken)
 }
 
 //////////////////////////////
@@ -228,6 +225,13 @@ func (x *User) CheckPassword(password string) (success bool, err error) {
 //////////////////////////////
 // OTHER /////////////////////
 
+func (x *User) UpdateFromAttrs(attrs UserAttrs) {
+  if (attrs.NameFirst != "") { x.NameFirst = attrs.NameFirst }
+  if (attrs.NameLast != "") { x.NameLast = attrs.NameLast }
+  if (attrs.Email != "") { x.Email = attrs.Email }
+  if (attrs.Password != "") { x.Password = attrs.Password }
+}
+
 func (x *UserAttrs) User() (*User) {
   return &User{
     NameFirst: x.NameFirst,
@@ -235,18 +239,6 @@ func (x *UserAttrs) User() (*User) {
     Email: x.Email,
     Password: x.Password,
     PasswordConfirmation: x.PasswordConfirmation,
-    IosPushToken: x.IosPushToken,
-  }
-}
-
-func (x *User) UserAttrs() (*UserAttrs) {
-  return &UserAttrs{
-    NameFirst: x.NameFirst,
-    NameLast: x.NameLast,
-    Email: x.Email,
-    Password: x.Password,
-    PasswordConfirmation: x.PasswordConfirmation,
-    IosPushToken: x.IosPushToken,
   }
 }
 
