@@ -19,6 +19,11 @@ func NewTestJobPersisted() *Job {
   return x
 }
 
+func Test_Job_Table(t *testing.T) {
+  x := NewTestJob()
+  expect(t, x.Table(), "jobs")
+}
+
 func Test_Item_BuildItem(t *testing.T) {
 
   j := NewTestJobPersisted()
@@ -42,13 +47,13 @@ func Test_Job_RequiresRecipes(t *testing.T) {
 
   x := NewTestJob()
   x.Recipes = []Recipe{}
-  x.Save()
-  expect(t, x.Validate(), false)
+  err := Save(x)
+  refute(t, err, nil)
   expect(t, x.ErrorMap["Recipes"], true)
 
   x = NewTestJob()
-  x.Save()
-  expect(t, x.Validate(), true)
+  err = Save(x)
+  expect(t, err, nil)
   expect(t, x.ErrorMap["Recipes"], false)
 }
 
@@ -56,93 +61,36 @@ func Test_Job_RequiresValidRecipes(t *testing.T) {
 
   x := NewTestJob()
   x.Recipes = []Recipe{Recipe{Key: ""}}
-  x.Save()
-  expect(t, x.Validate(), false)
+  err := Save(x)
+  refute(t, err, nil)
   expect(t, x.ErrorMap["Recipes"], true)
 
   x = NewTestJob()
   x.Recipes = []Recipe{NewTestRecipe()}
-  x.Save()
-  expect(t, x.Validate(), true)
+  err = Save(x)
+  expect(t, err, nil)
   expect(t, x.ErrorMap["Recipes"], false)
 }
 
 func Test_Job_RequiresKey(t *testing.T) {
   x := NewTestJob()
   x.Key = ""
-  expect(t, x.Validate(), false)
+  err := Save(x)
+  refute(t, err, nil)
   expect(t, x.ErrorMap["Key"], true)
 }
 
 func Test_Job_RequiresKeyForm(t *testing.T) {
   x := NewTestJob()
   x.Key = "cheese asdflkj"
-  expect(t, x.Validate(), false)
+  err := Save(x)
+  refute(t, err, nil)
   expect(t, x.ErrorMap["Key"], true)
 
   x.Key = "cheese-thing_ghi"
-  expect(t, x.Validate(), true)
+  err = Save(x)
+  expect(t, err, nil)
   expect(t, x.ErrorMap["Key"], false)
-}
-
-//////////////////////////////
-// TRANSACTIONS //////////////
-
-func Test_Job_Create_Success(t *testing.T) {
-
-  x := NewTestJob()
-  err := x.Save()
-  expect(t, err, nil)
-  refute(t, x.Id, "")
-}
-
-func Test_Job_Create_Fail(t *testing.T) {
-
-  x := NewTestJob()
-  x.Recipes = []Recipe{}
-  err := x.Save()
-  refute(t, err, nil)
-  expect(t, x.Id, "")
-}
-
-func Test_Job_Update_Success(t *testing.T) {
-
-  x := NewTestJobPersisted()
-  err := x.Save()
-  expect(t, err, nil)
-}
-
-func Test_Job_Update_Fail(t *testing.T) {
-
-  x := NewTestJobPersisted()
-  x.Recipes = []Recipe{}
-  err := x.Save()
-  refute(t, err, nil)
-}
-
-func Test_Job_Delete(t *testing.T) {
-
-  x := NewTestJob()
-  err := x.Save()
-  expect(t, err, nil)
-  refute(t, x.Id, "")
-
-  err = x.Delete()
-  expect(t, err, nil)
-}
-
-///////////
-
-func Test_Job_BeforeCreate(t *testing.T) {
-  x := NewTestJob()
-  x.BeforeCreate()
-  refute(t, x.CreatedAt.Format("RFC3339"), nil)
-}
-
-func Test_Job_BeforeUpdate(t *testing.T) {
-  x := NewTestJob()
-  x.BeforeUpdate()
-  refute(t, x.UpdatedAt.Format("RFC3339"), nil)
 }
 
 /////////////////////////

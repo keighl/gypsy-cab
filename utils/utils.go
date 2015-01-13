@@ -63,7 +63,9 @@ func MartiniServer(logginEnabled bool) (*martini.ClassicMartini) {
 }
 
 // https://gist.github.com/manishtpatel/8222606
+// encrypt string to base64 crypto using AES
 func Encrypt(key []byte, text string) string {
+  // key := []byte(keyText)
   plaintext := []byte(text)
 
   block, err := aes.NewCipher(key)
@@ -87,6 +89,7 @@ func Encrypt(key []byte, text string) string {
 }
 
 // https://gist.github.com/manishtpatel/8222606
+// decrypt from base64 to decrypted string
 func Decrypt(key []byte, cryptoText string) string {
   ciphertext, _ := base64.URLEncoding.DecodeString(cryptoText)
 

@@ -41,7 +41,7 @@ func Test_Route_Tokens_Index_Success(t *testing.T) {
 
 func tokensShowRunner(t *testing.T, code int) {
   server, recorder := testTools(t)
-  server.Get("/v1/tokens/:token_id", AuthorizeOK, TokensShow)
+  server.Get("/v1/tokens/:token", AuthorizeOK, TokensShow)
   req, _ := http.NewRequest("GET", "/v1/tokens/XXXXXX", nil)
   req.Header.Set("Content-Type", "application/json")
   server.ServeHTTP(recorder, req)
@@ -105,7 +105,7 @@ func Test_Route_Tokens_Create_Success(t *testing.T) {
 
 func tokensUpdateRunner(t *testing.T, code int) {
   server, recorder := testTools(t)
-  server.Put("/v1/tokens/:token_id", AuthorizeOK, binding.Bind(m.TokenAttrs{}), TokensUpdate)
+  server.Put("/v1/tokens/:token", AuthorizeOK, binding.Bind(m.TokenAttrs{}), TokensUpdate)
   body, _ := json.Marshal(m.TokenAttrs{})
   req, _ := http.NewRequest("PUT", "/v1/tokens/XXXXXX", bytes.NewReader(body))
   req.Header.Set("Content-Type", "application/json")
@@ -167,7 +167,7 @@ func Test_Route_Tokens_Update_Success(t *testing.T) {
 
 func tokensDeleteRunner(t *testing.T, code int) {
   server, recorder := testTools(t)
-  server.Delete("/v1/tokens/:token_id", AuthorizeOK, TokensDelete)
+  server.Delete("/v1/tokens/:token", AuthorizeOK, TokensDelete)
   req, _ := http.NewRequest("DELETE", "/v1/tokens/XXXXXX", nil)
   req.Header.Set("Content-Type", "application/json")
   server.ServeHTTP(recorder, req)

@@ -1,20 +1,14 @@
 package models
 
 import (
-  "time"
-  r "github.com/dancannon/gorethink"
-  "errors"
-  "regexp"
   "strings"
   "github.com/dchest/uniuri"
+  "regexp"
 )
 
 type Job struct {
-  Errors []string `gorethink:"-" json:"errors,omitempty"`
-  ErrorMap map[string]bool `gorethink:"-" json:"-"`
-  Id string `gorethink:"id,omitempty" json:"-"`
-  CreatedAt time.Time `gorethink:"created_at" json:"created_at,omitempty"`
-  UpdatedAt time.Time `gorethink:"updated_at" json:"updated_at,omitempty"`
+  Record
+  Id string `gorethink:"id,omitempty" json:"id"`
   UserId string `gorethink:"user_id" json:"-"`
   Key string `gorethink:"key" json:"key"`
   Recipes []Recipe `gorethink:"recipes" json:"recipes"`
@@ -25,11 +19,15 @@ type JobAttrs struct {
   Recipes []Recipe `json:"recipes" form:"recipes"`
 }
 
+func (x *Job) Table() string {
+  return "jobs"
+}
+
 func (job *Job) BuildItem() *Item {
   item := &Item{
+    Id: uniuri.NewLen(15),
     JobKey: job.Key,
     JobId: job.Id,
-    Id: uniuri.NewLen(15),
     JobUserId: job.UserId,
   }
 
@@ -45,74 +43,24 @@ func (job *Job) BuildItem() *Item {
 }
 
 //////////////////////////////
-// TRANSACTIONS //////////////
-
-func (x *Job) Save() error {
-
-  if (!x.Validate()) {
-    return errors.New("Validation errors")
-  }
-
-  if (x.Id == "") {
-    x.BeforeCreate()
-    res, err := r.Table("jobs").Insert(x).RunWrite(DB)
-    if (err != nil) { return err }
-    x.Id = res.GeneratedKeys[0]
-  }
-
-  x.BeforeUpdate()
-  _, err := r.Table("jobs").Get(x.Id).Replace(x).RunWrite(DB)
-  return err
-}
-
-func (x *Job) Delete() error {
-  _, err := r.Table("jobs").Get(x.Id).Delete().RunWrite(DB)
-  return err
-}
-
-//////////////////////////////
-// CALLBACKS /////////////////
-
-func (x *Job) BeforeCreate() {
-  x.CreatedAt = time.Now()
-  x.UpdatedAt = time.Now()
-}
-
-func (x *Job) BeforeUpdate() {
-  x.UpdatedAt = time.Now()
-}
-
-//////////////////////////////
 // VALIDATIONS ///////////////
 
-func (x *Job) Validate() (bool) {
-  x.Errors = []string{}
-  x.ErrorMap = map[string]bool{}
+func (x *Job) Validate() {
+  x.Record.Validate()
   x.Trimspace()
   x.ValidateRecipes()
   x.ValidateKey()
-  return !x.HasErrors()
-}
-
-func (x *Job) HasErrors() (bool) {
-  return len(x.Errors) > 0
-}
-
-func (x *Job) Trimspace() {
-  x.Key = strings.TrimSpace(x.Key)
-  x.Key = strings.ToLower(x.Key)
 }
 
 func (x *Job) ValidateRecipes() {
   if (len(x.Recipes) == 0) {
-    x.Errors = append(x.Errors, "You must assign some recipes")
-    x.ErrorMap["Recipes"] = true
+    x.ErrorOn("Recipes", "You must assign some recipes")
   }
 
   for _, r := range x.Recipes {
-    if (!r.Validate()) {
-      x.Errors = append(x.Errors, r.Errors...)
-      x.ErrorMap["Recipes"] = true
+    r.Validate()
+    if (r.HasErrors()) {
+      x.ErrorOn("Recipes", r.Errors...)
     }
   }
 }
@@ -123,6 +71,11 @@ func (x *Job) ValidateKey() {
     x.Errors = append(x.Errors, "Key must be at least 4 characters, and contain only letters, numbers, dashes or underscores")
     x.ErrorMap["Key"] = true
   }
+}
+
+func (x *Job) Trimspace() {
+  x.Key = strings.TrimSpace(x.Key)
+  x.Key = strings.ToLower(x.Key)
 }
 
 //////////////////////////////

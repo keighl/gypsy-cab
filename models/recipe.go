@@ -16,13 +16,12 @@ type Recipe struct {
 //////////////////////////////
 // VALIDATIONS ///////////////
 
-func (x *Recipe) Validate() (bool) {
+func (x *Recipe) Validate() {
   x.Errors = []string{}
   x.ErrorMap = map[string]bool{}
   x.Trimspace()
   x.ValidateKey()
   x.ValidateFormat()
-  return !x.HasErrors()
 }
 
 func (x *Recipe) HasErrors() (bool) {
@@ -48,7 +47,6 @@ func (x *Recipe) ValidateKey() {
 }
 
 func (x *Recipe) ValidateFormat() {
-
   if (x.Format != "") {
     if (!stringInSlice(x.Format, []string{"jpg", "jpeg", "gif", "png"})) {
       x.Errors = append(x.Errors, "Format must be jpg, gif, or png")

@@ -16,7 +16,7 @@ var  (
 // API DATA //////////////////
 
 type Data struct {
-  UserToken string `json:"api_token,omitempty"`
+  APIToken string `json:"api_token,omitempty"`
   *Error `json:"error,omitempty"`
   *Message `json:"message,omitempty"`
   *m.User `json:"user,omitempty"`

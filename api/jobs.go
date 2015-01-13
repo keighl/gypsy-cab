@@ -16,7 +16,6 @@ type JobsData struct {
 type JobData struct {
   User *m.User `json:"current_user,omitempty"`
   *m.Job `json:"job"`
-  Items []m.Item `json:"items,omitempty"`
 }
 
 ////////////////////////
@@ -71,7 +70,7 @@ func JobsShow(params martini.Params, r render.Render, user *m.User) {
 /////////////////////////
 
 var saveJob = func(job *m.Job) (error) {
-  return job.Save()
+  return m.Save(job)
 }
 
 func JobsCreate(r render.Render, user *m.User, attrs m.JobAttrs) {
@@ -121,7 +120,7 @@ func JobsUpdate(params martini.Params, r render.Render, user *m.User, attrs m.Jo
 /////////////////////////
 
 var deleteJob = func(job *m.Job) (error) {
-  return job.Delete()
+  return m.Delete(job)
 }
 
 func JobsDelete(params martini.Params, r render.Render, user *m.User) {

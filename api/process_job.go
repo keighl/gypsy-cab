@@ -162,7 +162,7 @@ func JobProcess(params martini.Params, r render.Render, upload Upload) {
 
     if remProcessed == 0 {
       // Save everything to the DB
-      err = item.Save()
+      err = m.Save(item)
       if err != nil {
         r.JSON(500, ServerErrorEnvelope())
         return

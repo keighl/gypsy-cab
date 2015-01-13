@@ -36,8 +36,8 @@ func ItemsIndex(params martini.Params, r render.Render, user *m.User) {
 
   job, err := loadJob(params["job_id"], user)
 
-  if (job == nil || err != nil) {
-    r.JSON(404, MessageEnvelope("Record not found"))
+  if (err != nil) {
+    r.JSON(404, MessageEnvelope("Job not found"))
     return
   }
 
@@ -79,7 +79,7 @@ func ItemsShow(params martini.Params, r render.Render, user *m.User) {
 /////////////////////////
 
 var deleteItem = func(item *m.Item) (error) {
-  return item.Delete()
+  return m.Delete(item)
 }
 
 func ItemsDelete(params martini.Params, r render.Render, user *m.User) {

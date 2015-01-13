@@ -17,7 +17,7 @@ var loadUser = func(id string) (*m.User, error) {
 //////////////////////////////////////
 
 var saveUser = func(user *m.User) (error) {
-  return user.Save()
+  return m.Save(user)
 }
 
 func UserCreate(r render.Render, attrs m.UserAttrs) {
@@ -33,7 +33,7 @@ func UserCreate(r render.Render, attrs m.UserAttrs) {
     return
   }
 
-  data := &Data{User: user, UserToken: user.Token}
+  data := &Data{User: user, APIToken: user.APIToken}
   r.JSON(201, data)
 }
 

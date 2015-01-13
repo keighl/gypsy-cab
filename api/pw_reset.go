@@ -16,7 +16,7 @@ import (
 /////////////////////
 
 var savePasswordReset = func(reset *m.PasswordReset) error {
-  return reset.Save()
+  return m.Save(reset)
 }
 
 func PasswordResetCreate(r render.Render, attrs m.PasswordResetAttrs) {
@@ -57,9 +57,9 @@ func PasswordResetCreate(r render.Render, attrs m.PasswordResetAttrs) {
 
 /////////////////////
 
-var loadPasswordReset = func(token string) (*m.PasswordReset, error) {
+var loadPasswordReset = func(id string) (*m.PasswordReset, error) {
   reset := &m.PasswordReset{}
-  res, err := r.Table("password_resets").GetAllByIndex("token", token).Run(DB)
+  res, err := r.Table("password_resets").Get(id).Run(DB)
   if (err != nil) { return nil, err }
   err = res.One(reset)
   if (err != nil) { return nil, err }
@@ -79,6 +79,11 @@ func PasswordResetUpdate(params martini.Params, r render.Render, attrs m.UserAtt
 
   if (reset.ExpiresAt.Before(time.Now())) {
     r.JSON(400, ErrorEnvelope("The reset token has expired", nil))
+    return
+  }
+
+  if (!reset.Active) {
+    r.JSON(400, ErrorEnvelope("The reset token has been used", nil))
     return
   }
 
@@ -119,7 +124,7 @@ type ResetPasswordEmailData struct {
 }
 
 func (x *ResetPasswordEmailData) ResetURL() string {
-  return Config.BaseURL + "password-reset/" + x.PasswordReset.Token
+  return Config.BaseURL + "password-reset/" + x.PasswordReset.Id
 }
 
 func PasswordResetEmailMessage(user *m.User, reset *m.PasswordReset) (*mandrill.Message, error) {

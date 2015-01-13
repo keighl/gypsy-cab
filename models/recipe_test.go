@@ -16,31 +16,30 @@ func NewTestRecipe() Recipe{
 func Test_Recipe_RequiresKey(t *testing.T) {
   x := NewTestRecipe()
   x.Key = ""
-  expect(t, x.Validate(), false)
+  x.Validate()
   expect(t, x.ErrorMap["Key"], true)
 }
 
 func Test_Recipe_RequiresKeyForm(t *testing.T) {
   x := NewTestRecipe()
   x.Key = "cheese asdflkj"
-  expect(t, x.Validate(), false)
+  x.Validate()
   expect(t, x.ErrorMap["Key"], true)
 
   x.Key = "cheese-thing_ghi"
-  expect(t, x.Validate(), true)
+  x.Validate()
   expect(t, x.ErrorMap["Key"], false)
 }
 
 func Test_Recipe_RequiresFormatInclusion(t *testing.T) {
   x := NewTestRecipe()
   x.Format = "cheese"
-  expect(t, x.Validate(), false)
+  x.Validate()
   expect(t, x.ErrorMap["Format"], true)
 
   for _, q := range []string{"", "jpg", "jpeg", "gif", "png"} {
     x.Format = q
-    expect(t, x.Validate(),
-      true)
+    x.Validate()
     expect(t, x.ErrorMap["Format"], false)
   }
 }

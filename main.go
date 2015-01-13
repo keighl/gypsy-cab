@@ -14,9 +14,9 @@ func main() {
   config := u.ConfigForFile("config/app.json")
   DB := u.RethinkSession(config)
   api.DB = DB
-  api.Config = u.ConfigForFile("config/app.json")
+  api.Config = config
   m.DB = DB
-  m.Config = u.ConfigForFile("config/app.json")
+  m.Config = config
   server := u.MartiniServer(config.ServerLoggingEnabled)
   SetupServerRoutes(server)
   server.Run() // Blocks....

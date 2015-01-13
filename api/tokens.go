@@ -70,7 +70,7 @@ func TokensShow(params martini.Params, r render.Render, user *m.User) {
 /////////////////////////
 
 var saveToken = func(token *m.Token) (error) {
-  return token.Save()
+  return m.Save(token)
 }
 
 func TokensCreate(r render.Render, user *m.User, attrs m.TokenAttrs) {
@@ -94,7 +94,7 @@ func TokensCreate(r render.Render, user *m.User, attrs m.TokenAttrs) {
 /////////////////////////
 
 func TokensUpdate(params martini.Params, r render.Render, user *m.User, attrs m.TokenAttrs) {
-  token, err := loadToken(params["token_id"], user)
+  token, err := loadToken(params["token"], user)
 
   if (token == nil || err != nil) {
     r.JSON(404, MessageEnvelope("Record not found"))
@@ -120,11 +120,11 @@ func TokensUpdate(params martini.Params, r render.Render, user *m.User, attrs m.
 /////////////////////////
 
 var deleteToken = func(token *m.Token) (error) {
-  return token.Delete()
+  return m.Delete(token)
 }
 
 func TokensDelete(params martini.Params, r render.Render, user *m.User) {
-  token, err := loadToken(params["token_id"], user)
+  token, err := loadToken(params["token"], user)
 
   if (token == nil || err != nil) {
     r.JSON(404, MessageEnvelope("Record not found"))

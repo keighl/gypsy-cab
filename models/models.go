@@ -15,7 +15,7 @@ var  (
 type Recorder interface {
   Table() string
 
-  Id() string
+  GetId() string
   SetId(string)
   IsNewRecord() bool
 
@@ -24,7 +24,7 @@ type Recorder interface {
   AfterValidate()
   Validate()
   HasErrors() (bool)
-  ErrorOn(attr string, message string)
+  ErrorOn(attr string, message ...string)
 
   // Save
   BeforeSave()
@@ -68,7 +68,7 @@ func Save(x Recorder) error {
   }
 
   x.BeforeUpdate()
-  _, err := r.Table(x.Table()).Get(x.Id()).Replace(x).RunWrite(DB)
+  _, err := r.Table(x.Table()).Get(x.GetId()).Replace(x).RunWrite(DB)
   if (err != nil) { return err }
   x.AfterUpdate()
   x.AfterSave()
@@ -77,7 +77,7 @@ func Save(x Recorder) error {
 
 func Delete(x Recorder) error {
   x.BeforeDelete()
-  _, err := r.Table("tokens").Get(x.Id()).Delete().RunWrite(DB)
+  _, err := r.Table(x.Table()).Get(x.GetId()).Delete().RunWrite(DB)
   if (err != nil) { return err }
   x.AfterDelete()
   return nil
@@ -87,30 +87,34 @@ func Delete(x Recorder) error {
 //////////////////////////////
 
 type Record struct {
-  id string `gorethink:"id,omitempty" json:"id"`
+  Id string `gorethink:"id,omitempty" json:"id"`
   CreatedAt time.Time `gorethink:"created_at" json:"created_at"`
-  UpdatedAt time.Time `gorethink:"updated+at" json:"-"`
+  UpdatedAt time.Time `gorethink:"updated_at" json:"-"`
   Errors []string `gorethink:"-" json:"errors,omitempty"`
   ErrorMap map[string]bool `gorethink:"-" json:"-"`
 }
 
+func (x *Record) Table() string {
+  return "records"
+}
+
 func (x *Record) IsNewRecord() bool {
-  return x.id == ""
+  return x.GetId() == ""
 }
 
 //////////////////////////////
 // ID ////////////////////////
 
-func (x *Record) Id() string {
-  return x.id
+func (x *Record) GetId() string {
+  return x.Id
 }
 
 func (x *Record) SetId(id string) {
-  x.id = id
+  x.Id = id
 }
 
 //////////////////////////////
-// CALLBACKS /////////////////
+// VALIDATIONS ///////////////
 
 func (x *Record) BeforeValidate() {
   x.Errors = []string{}
@@ -125,10 +129,13 @@ func (x *Record) HasErrors() (bool) {
   return len(x.Errors) > 0
 }
 
-func (x *Record) ErrorOn(attr string, message string) {
+func (x *Record) ErrorOn(attr string, message ...string) {
   x.ErrorMap[attr] = true
-  x.Errors = append(x.Errors, message)
+  x.Errors = append(x.Errors, message...)
 }
+
+//////////////////////////////
+// CALLBACK //////////////////
 
 func (x *Record) BeforeSave() {
   x.UpdatedAt = time.Now()
@@ -138,6 +145,7 @@ func (x *Record) AfterSave() {}
 
 func (x *Record) BeforeCreate() {
   x.CreatedAt = time.Now()
+  x.UpdatedAt = x.CreatedAt
 }
 
 func (x *Record) AfterCreate() {}
