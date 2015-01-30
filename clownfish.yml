@@ -1,0 +1,26 @@
+conn:
+  host: 0.0.0.0:28015
+  db: gypsy
+tables:
+
+  items:
+    indicies:
+      job_id:
+
+  jobs:
+    indicies:
+      user_id:
+      key:
+
+  password_resets:
+    indicies:
+      user_id:
+
+  tokens:
+    indicies:
+      user_id:
+
+  users:
+    indicies:
+      api_token:
+      email:

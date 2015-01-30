@@ -5,8 +5,6 @@ import (
   u "gypsy/utils"
 )
 
-var tokenKey []byte = []byte("GLumCwoK89HhRykooYLZUBtk>=3m<:9q")
-
 type Token struct {
   Record
   UserId string `gorethink:"user_id" json:"-"`
@@ -14,6 +12,9 @@ type Token struct {
   S3ClientSecretCrypted string `gorethink:"s3_client_secret" json:"-"`
   S3Bucket string `gorethink:"s3_bucket" json:"s3_bucket"`
   S3Region string `gorethink:"s3_region" json:"s3_region"`
+
+  // For older clients that may expect a data.{} envelope
+  LegacyToken bool `gorethink:"is_legacy,omitempty" json:"-"`
 }
 
 type TokenAttrs struct {
@@ -65,11 +66,13 @@ func (x *Token) ValidateS3Creds() {
 // SECRET ////////////////////
 
 func (x *Token) S3ClientSecret() string {
+  var tokenKey []byte = []byte(Config.TokenEncryptionKey)
   return u.Decrypt(tokenKey, x.S3ClientSecretCrypted)
 }
 
 func (x *Token) SetSecret(secret string) {
   secret = strings.TrimSpace(secret)
+  var tokenKey []byte = []byte(Config.TokenEncryptionKey)
   x.S3ClientSecretCrypted = u.Encrypt(tokenKey, secret)
 }
 

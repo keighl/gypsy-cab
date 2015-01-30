@@ -24,6 +24,12 @@ type Data struct {
   *m.Item `json:"item,omitempty"`
 }
 
+// For older clients that may expect a data.{} envelope
+type LegacyEnvelope struct {
+  *Data `json:"data"`
+}
+
+
 //////////////////////////////
 // API MESSAGE ///////////////
 

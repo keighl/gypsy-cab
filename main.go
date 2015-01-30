@@ -6,12 +6,14 @@ import (
   u "gypsy/utils"
   "github.com/go-martini/martini"
   "github.com/martini-contrib/binding"
+  "os"
 )
 
 /////////////////////////////
 
 func main() {
-  config := u.ConfigForFile("config/app.json")
+  env := os.Getenv("MARTINI_ENV")
+  config := u.Config(env)
   DB := u.RethinkSession(config)
   api.DB = DB
   api.Config = config
@@ -44,6 +46,11 @@ func SetupServerRoutes(server *martini.ClassicMartini) {
   server.Put("/v1/jobs/:job_id", api.Authorize, binding.Bind(m.JobAttrs{}), api.JobsUpdate)
   server.Delete("/v1/jobs/:job_id", api.Authorize, api.JobsDelete)
   server.Post("/v1/jobs/:job_id/:token", binding.Bind(api.Upload{}), api.JobProcess)
+
+  // For some existing clients that want /api/ in the namespace
+  server.Post("/api/v1/jobs/:job_id/:token", binding.Bind(api.Upload{}), api.JobProcess)
+
+  // Items
   server.Get("/v1/jobs/:job_id/items", api.Authorize, api.ItemsIndex)
 
   // Tokens

@@ -64,7 +64,6 @@ func JobProcess(params martini.Params, r render.Render, upload Upload) {
 
   // Create an item
   item := job.BuildItem()
-  item.TokenId = token.Id
 
   // Open the uploaded file
   file, err := upload.Image.Open()
@@ -171,8 +170,13 @@ func JobProcess(params martini.Params, r render.Render, upload Upload) {
     }
   }
 
-  data := &Data{Item: item}
-  r.JSON(201, data)
+  if (token.LegacyToken) {
+    // For older clients that may expect a data.{} envelope
+    item.Uuid = item.Id
+    r.JSON(201, LegacyEnvelope{&Data{Item: item}})
+  } else {
+    r.JSON(201, &Data{Item: item})
+  }
 }
 
 ///////

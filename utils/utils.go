@@ -1,12 +1,9 @@
 package utils
 
 import (
-  "os"
-  "encoding/json"
   "github.com/go-martini/martini"
   "github.com/martini-contrib/render"
   "github.com/martini-contrib/cors"
-  _ "github.com/go-sql-driver/mysql"
   r "github.com/dancannon/gorethink"
   "crypto/aes"
   "crypto/cipher"
@@ -15,26 +12,6 @@ import (
   "fmt"
   "io"
 )
-
-type Configuration struct {
-  AppName string
-  BaseURL string
-  RethinkHost string
-  RethinkDatabase string
-  ServerLoggingEnabled bool
-  MandrillAPIKey string
-}
-
-func ConfigForFile(confFile string) *Configuration {
-  file, err := os.Open(confFile)
-  if (err != nil) { panic(err) }
-  decoder := json.NewDecoder(file)
-  c := &Configuration{}
-  err = decoder.Decode(c)
-  if (err != nil) { panic(err) }
-  file.Close()
-  return c
-}
 
 func RethinkSession(conf *Configuration) *r.Session {
   session, _ := r.Connect(r.ConnectOpts{

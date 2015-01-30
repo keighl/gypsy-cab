@@ -54,6 +54,8 @@ func Test_Token_RequiresS3Creds(t *testing.T) {
 // ATTR CONVERSION //////
 
 func Test_Token_UpdateAttrs(t *testing.T) {
+  var tokenKey []byte = []byte(Config.TokenEncryptionKey)
+
   obj := &Token{
     S3AccessId: "cheese",
     S3ClientSecretCrypted: "cheese",
@@ -81,6 +83,8 @@ func Test_Token_UpdateAttrs(t *testing.T) {
 }
 
 func Test_TokenAttrs_Token(t *testing.T) {
+  var tokenKey []byte = []byte(Config.TokenEncryptionKey)
+
   obj := &TokenAttrs{
     S3AccessId: "cheese",
     S3ClientSecret: "cheese",

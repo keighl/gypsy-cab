@@ -16,15 +16,26 @@ var (
 )
 
 func init() {
-  Config = u.ConfigForFile("../config/test.json")
+  Config = u.Config("test")
   DB = u.RethinkSession(Config)
 
-  r.Table("users").Delete().RunWrite(DB)
-  r.Table("password_resets").Delete().RunWrite(DB)
-  r.Table("tokens").Delete().RunWrite(DB)
-  r.Table("jobs").Delete().RunWrite(DB)
-  r.Table("items").Delete().RunWrite(DB)
+  tables := []string{
+    new(Record).Table(),
+    new(User).Table(),
+    new(PasswordReset).Table(),
+    new(Token).Table(),
+    new(Job).Table(),
+    new(Item).Table(),
+  }
+
+  for _, t := range tables {
+    go func() {
+      r.Db(Config.RethinkDatabase).TableCreate(t).RunWrite(DB)
+      r.Table(t).Delete().RunWrite(DB)
+    }()
+  }
 }
+
 func expect(t *testing.T, a interface{}, b interface{}) {
   if a != b {
     t.Errorf("Expected %v (type %v) - Got %v (type %v)", b, reflect.TypeOf(b), a, reflect.TypeOf(a))

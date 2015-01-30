@@ -7,11 +7,17 @@ package models
 type Item struct {
   Record
   Id string `gorethink:"id,omitempty" json:"id"`
-  TokenId string `gorethink:"token_id" json:"-"`
   JobId string `gorethink:"job_id" json:"-"`
   JobKey string `gorethink:"job_key" json:"job"`
   JobUserId string `gorethink:"job_user_id" json:"-"`
   Versions []Version `gorethink:"versions" json:"versions"`
+
+  // For older clients that may expect a UUID node in the JSON payload
+  Uuid string `gorethink:"-" json:"uuid,omitempty"`
+}
+
+func (x *Item) Table() string {
+  return "items"
 }
 
 func (x *Item) IsNewRecord() bool {
