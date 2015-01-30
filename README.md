@@ -6,9 +6,9 @@ A work in progress still... but I use it in production for a handful of apps.
 
 Some of the awesome Go libraries used:
 
-* [go-martini/martini](github.com/go-martini/martini)
-* [disintegration/gift](github.com/disintegration/gift)
-* [dancannon/gorethink](github.com/dancannon/gorethink)
+* [go-martini/martini](http://github.com/go-martini/martini)
+* [disintegration/gift](http://github.com/disintegration/gift)
+* [dancannon/gorethink](http://github.com/dancannon/gorethink)
 
 ### TODO
 
