@@ -20,7 +20,7 @@ func Config(env string) *Configuration {
       RethinkDatabase: "gypsy",
       ServerLoggingEnabled: true,
       MandrillAPIKey: "XXXXXXXXX",
-      TokenEncryptionKey: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      TokenEncryptionKey: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
     }
   }
 
@@ -32,7 +32,7 @@ func Config(env string) *Configuration {
       RethinkDatabase: "gypsy_test",
       ServerLoggingEnabled: false,
       MandrillAPIKey: "XXXXXXXXX",
-      TokenEncryptionKey: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      TokenEncryptionKey: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
     }
   }
 
@@ -43,6 +43,6 @@ func Config(env string) *Configuration {
     RethinkDatabase: "gypsy",
     ServerLoggingEnabled: true,
     MandrillAPIKey: "XXXXXXXXX",
-    TokenEncryptionKey: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    TokenEncryptionKey: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
   }
 }
