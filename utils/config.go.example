@@ -7,6 +7,7 @@ type Configuration struct {
   RethinkDatabase string
   ServerLoggingEnabled bool
   MandrillAPIKey string
+  TokenEncryptionKey string
 }
 
 func Config(env string) *Configuration {
