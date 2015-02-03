@@ -1,7 +1,7 @@
 package api
 
 import (
-  m "gypsy/models"
+  m "github.com/keighl/gypsy-cab/models"
   "github.com/go-martini/martini"
   "github.com/martini-contrib/render"
   "net/http"

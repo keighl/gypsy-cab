@@ -3,10 +3,11 @@ package models
 import (
   "testing"
   "reflect"
-  u "gypsy/utils"
+  u "github.com/keighl/gypsy-cab/utils"
   r "github.com/dancannon/gorethink"
   "github.com/dchest/uniuri"
   "image"
+  "sync"
 )
 
 var (
@@ -17,7 +18,10 @@ var (
 
 func init() {
   Config = u.Config("test")
-  DB = u.RethinkSession(Config)
+  DB, _ = u.RethinkSession(Config)
+
+  r.DbDrop(Config.RethinkDatabase).Exec(DB)
+  r.DbCreate(Config.RethinkDatabase).Exec(DB)
 
   tables := []string{
     new(Record).Table(),
@@ -28,12 +32,16 @@ func init() {
     new(Item).Table(),
   }
 
+  var wg sync.WaitGroup
   for _, t := range tables {
-    go func() {
-      r.Db(Config.RethinkDatabase).TableCreate(t).RunWrite(DB)
-      r.Table(t).Delete().RunWrite(DB)
-    }()
+    wg.Add(1)
+    go func(table string) {
+      r.Db(Config.RethinkDatabase).TableCreate(table).RunWrite(DB)
+      r.Table(table).Delete().RunWrite(DB)
+      wg.Done()
+    }(t)
   }
+  wg.Wait()
 }
 
 func expect(t *testing.T, a interface{}, b interface{}) {

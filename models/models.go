@@ -1,7 +1,7 @@
 package models
 
 import (
-  u "gypsy/utils"
+  u "github.com/keighl/gypsy-cab/utils"
   r "github.com/dancannon/gorethink"
   "errors"
   "time"

@@ -1,8 +1,8 @@
 package api
 
 import (
-  m "gypsy/models"
-  "gypsy/utils"
+  m "github.com/keighl/gypsy-cab/models"
+  "github.com/keighl/gypsy-cab/utils"
   "github.com/martini-contrib/render"
   "github.com/keighl/mandrill"
   "github.com/go-martini/martini"

@@ -2,7 +2,7 @@ package api
 
 import (
   "testing"
-  m "gypsy/models"
+  m "github.com/keighl/gypsy-cab/models"
   "net/http"
   "errors"
 )

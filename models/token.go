@@ -2,7 +2,7 @@ package models
 
 import (
   "strings"
-  u "gypsy/utils"
+  u "github.com/keighl/gypsy-cab/utils"
 )
 
 type Token struct {

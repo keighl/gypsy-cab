@@ -1,12 +1,13 @@
 package main
 
 import (
-  "gypsy/api"
-  m "gypsy/models"
-  u "gypsy/utils"
+  "github.com/keighl/gypsy-cab/api"
+  m "github.com/keighl/gypsy-cab/models"
+  u "github.com/keighl/gypsy-cab/utils"
   "github.com/go-martini/martini"
   "github.com/martini-contrib/binding"
   "os"
+  r "github.com/dancannon/gorethink"
 )
 
 /////////////////////////////
@@ -14,17 +15,20 @@ import (
 func main() {
   env := os.Getenv("MARTINI_ENV")
   config := u.Config(env)
-  DB := u.RethinkSession(config)
-  api.DB = DB
-  api.Config = config
-  m.DB = DB
-  m.Config = config
-  server := u.MartiniServer(config.ServerLoggingEnabled)
+  DB, _ := u.RethinkSession(config)
+  SetupSubpackages(DB, config)
+  server := u.MartiniServer(config)
   SetupServerRoutes(server)
-  server.Run() // Blocks....
+  server.Run()
   DB.Close()
 }
 
+func SetupSubpackages(DB *r.Session, config *u.Configuration) {
+  api.DB = DB
+  m.DB = DB
+  api.Config = config
+  m.Config = config
+}
 func SetupServerRoutes(server *martini.ClassicMartini) {
 
   server.Get("/v1/", api.Authorize, api.Me)

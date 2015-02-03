@@ -1,8 +1,8 @@
 package api
 
 import (
-  u "gypsy/utils"
-  m "gypsy/models"
+  u "github.com/keighl/gypsy-cab/utils"
+  m "github.com/keighl/gypsy-cab/models"
   "testing"
   "net/http/httptest"
   "github.com/go-martini/martini"
@@ -11,14 +11,14 @@ import (
 
 func init() {
   Config = u.Config("test")
-  DB = u.RethinkSession(Config)
+  DB, _ = u.RethinkSession(Config)
 
   m.DB = DB
   m.Config = Config
 }
 
 func testTools(t *testing.T) (*martini.ClassicMartini, *httptest.ResponseRecorder) {
-  return u.MartiniServer(false), httptest.NewRecorder()
+  return u.MartiniServer(Config), httptest.NewRecorder()
 }
 
 func expect(t *testing.T, a interface{}, b interface{}) {

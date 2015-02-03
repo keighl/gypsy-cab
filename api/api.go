@@ -1,8 +1,8 @@
 package api
 
 import (
-  m "gypsy/models"
-  u "gypsy/utils"
+  m "github.com/keighl/gypsy-cab/models"
+  u "github.com/keighl/gypsy-cab/utils"
   "github.com/keighl/mandrill"
   r "github.com/dancannon/gorethink"
 )

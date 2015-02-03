@@ -8,3 +8,4 @@ rethinkdb_data
 tmp
 utils/config.go
 test.jpg
+*.coverprofile

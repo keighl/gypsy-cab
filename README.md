@@ -22,6 +22,6 @@ Some of the awesome Go libraries used:
 * Publish Objective-C client
 * Publish web client
 
-### Basic Use
+### Basic API Use
 
 `curl -F image='@test.jpg' http://localhost:3000/api/v1/jobs/JOB-IDENTIFIER/STORE-TOKEN`

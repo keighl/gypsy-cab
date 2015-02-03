@@ -13,18 +13,17 @@ import (
   "io"
 )
 
-func RethinkSession(conf *Configuration) *r.Session {
-  session, _ := r.Connect(r.ConnectOpts{
+func RethinkSession(conf *Configuration) (*r.Session, error) {
+  return r.Connect(r.ConnectOpts{
     Address:  conf.RethinkHost,
     Database: conf.RethinkDatabase,
   })
-  return session
 }
 
-func MartiniServer(logginEnabled bool) (*martini.ClassicMartini) {
+func MartiniServer(conf *Configuration) (*martini.ClassicMartini) {
   router := martini.NewRouter()
   server := martini.New()
-  if (logginEnabled) { server.Use(martini.Logger()) }
+  if (conf.ServerLoggingEnabled) { server.Use(martini.Logger()) }
   server.Use(martini.Recovery())
   server.MapTo(router, (*martini.Routes)(nil))
   server.Action(router.Handle)

@@ -2,7 +2,7 @@ package models
 
 import (
   "testing"
-  u "gypsy/utils"
+  u "github.com/keighl/gypsy-cab/utils"
 )
 
 func NewTestToken() *Token {
