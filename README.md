@@ -1,5 +1,7 @@
 # Gypsy Cab
 
+[![Build Status](https://travis-ci.org/keighl/gypsy-cab.svg?branch=master)](https://travis-ci.org/keighl/gypsy-cab) [![Coverage Status](https://coveralls.io/repos/keighl/gypsy-cab/badge.svg?branch=master)](https://coveralls.io/r/keighl/gypsy-cab?branch=master)
+
 Gypsy Cab is a standalone image processing web-service written in Go. In short, send images at it, it will perform configurable processing recipes, and finally upload it to S3. It uses RethinkDB as a datastore.
 
 A work in progress still... but I use it in production for a handful of apps.
